@@ -4,8 +4,9 @@ Descripciín basisca de su Proyecto de POO ...
 
 # Autores
 
-- Autor 1
-- Autor 2
+- Autor Juan Rojas
+- Autor Jean Harwol
+- Autor Sebatian Vega
 
 # Herramientas
 
