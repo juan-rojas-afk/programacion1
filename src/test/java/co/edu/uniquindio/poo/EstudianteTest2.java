@@ -1,14 +1,17 @@
 package co.edu.uniquindio.poo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.junit.jupiter.api.Test;
 
 /**
- * Clase para probar el funcionamiento del código de un estudiante
+ * Clase para probar el funcionamiento del código de un estudiante - Parte 2
  * 
  * @author Área de programación UQ
  * @since 2024-01
@@ -20,205 +23,151 @@ public class EstudianteTest2 {
     private static final Logger LOG = Logger.getLogger(EstudianteTest2.class.getName());
 
     /**
-     * Prueba para verificar que se puede obtener una nota obtenida existente
+     * Prueba para verificar el registro de clases a un curso
      */
     @Test
-    public void obtenerNotaObtenidaExistente() {
-        LOG.info("Inicio obtenerNotaObtenidaExistente");
+    public void registrarClases() {
+        LOG.info("Inicio registrarClases");
 
-        var estudiante = new Estudiante("Camila", "Alzate Rios", "109453264", "camila@uniquindio.edu.co",
-                "315635674", 15);
+        var curso = new Curso("Programación 1");
 
-        var notaParcial = new NotaParcial("Parcial 1", 0.2);
-        var notaObtenida = new NotaObtenida(notaParcial, 3.5);
-        estudiante.adicionarNotaObtenida(notaObtenida);
+        var primeraClase = new ClaseCurso(LocalDateTime.now().minusDays(15));
+        var segundaClase = new ClaseCurso(LocalDateTime.now().minusDays(8));
+        var terceraClase = new ClaseCurso(LocalDateTime.now());
 
-        assertEquals(notaObtenida, estudiante.getNotaObtenida("Parcial 1"));
+        curso.programarClase(primeraClase);
+        curso.programarClase(segundaClase);
+        curso.programarClase(terceraClase);
 
-        LOG.info("Finalización obtenerNotaObtenidaExistente");
+        assertEquals(3, curso.getClases().size());
+
+        LOG.info("Finalización registrarClases");
+    }
+
+    // TODO ¿Cómo hacer más cortos las siguientes pruebas?
+
+    /**
+     * Prueba para verificar que se obtiene la lista de asistentes a una clase
+     */
+    @Test
+    public void listaAsistentes() {
+        LOG.info("Inicio listaAsistentes");
+
+        var curso = new Curso("Programación 1");
+
+        var xiomara = new Estudiante("Xiomara", "Gomez", "109445634", "xiomara@uniquindio.edu.co", "3148763412", 31);
+        var ana = new Estudiante("Ana", "Quintero", "109498764", "ana@uniquindio.edu.co", "3137442312", 28);
+        var juan = new Estudiante("Juan", "Botero", "1092394924", "juan@uniquindio.edu.co", "3218341234", 17);
+
+        curso.agregarEstudiante(xiomara);
+        curso.agregarEstudiante(ana);
+        curso.agregarEstudiante(juan);
+
+        var primeraClase = new ClaseCurso(LocalDateTime.now().minusDays(15));
+        var segundaClase = new ClaseCurso(LocalDateTime.now().minusDays(8));
+        var terceraClase = new ClaseCurso(LocalDateTime.now());
+
+        curso.programarClase(primeraClase);
+        curso.programarClase(segundaClase);
+        curso.programarClase(terceraClase);
+
+        xiomara.agregarAsistencia(new Asistencia(primeraClase, TipoAsistencia.PRESENTE));
+        xiomara.agregarAsistencia(new Asistencia(segundaClase, TipoAsistencia.PRESENTE));
+        xiomara.agregarAsistencia(new Asistencia(terceraClase, TipoAsistencia.PRESENTE));
+
+        ana.agregarAsistencia(new Asistencia(primeraClase, TipoAsistencia.PRESENTE));
+        ana.agregarAsistencia(new Asistencia(terceraClase, TipoAsistencia.PRESENTE));
+
+        juan.agregarAsistencia(new Asistencia(segundaClase, TipoAsistencia.AUSENTE));
+        juan.agregarAsistencia(new Asistencia(terceraClase, TipoAsistencia.PRESENTE));
+
+        Collection<Estudiante> listaEsperada = List.of(xiomara, ana);
+
+        assertIterableEquals(listaEsperada, curso.getAsistentes(primeraClase));
+
+        LOG.info("Finalización listaAsistentes");
     }
 
     /**
-     * Prueba para verificar que NO se puedan registrar más de una nota a una nota
-     * parcial
+     * Prueba para verificar que se obtiene la lista de ausentes a una clase
      */
     @Test
-    public void registrarMasUnaNotaParcial() {
-        LOG.info("Inicio registrarMasUnaNotaParcial");
+    public void listaAusentes() {
+        LOG.info("Inicio listaAusentes");
 
-        var estudiante = new Estudiante("Camila", "Alzate Rios", "109453264", "camila@uniquindio.edu.co",
-                "315635674", 15);
+        var curso = new Curso("Programación 1");
 
-        var notaParcial = new NotaParcial("Parcial 1", 0.2);
-        var notaObtenida1 = new NotaObtenida(notaParcial, 3.5);
-        var notaObtenida2 = new NotaObtenida(notaParcial, 4.2);
-        estudiante.adicionarNotaObtenida(notaObtenida1);
+        var xiomara = new Estudiante("Xiomara", "Gomez", "109445634", "xiomara@uniquindio.edu.co", "3148763412", 31);
+        var ana = new Estudiante("Ana", "Quintero", "109498764", "ana@uniquindio.edu.co", "3137442312", 28);
+        var juan = new Estudiante("Juan", "Botero", "1092394924", "juan@uniquindio.edu.co", "3218341234", 17);
 
-        assertThrows(Throwable.class, () -> estudiante.adicionarNotaObtenida(notaObtenida2));
+        curso.agregarEstudiante(xiomara);
+        curso.agregarEstudiante(ana);
+        curso.agregarEstudiante(juan);
 
-        LOG.info("Finalización registrarMasUnaNotaParcial");
+        var primeraClase = new ClaseCurso(LocalDateTime.now().minusDays(15));
+        var segundaClase = new ClaseCurso(LocalDateTime.now().minusDays(8));
+        var terceraClase = new ClaseCurso(LocalDateTime.now());
+
+        curso.programarClase(primeraClase);
+        curso.programarClase(segundaClase);
+        curso.programarClase(terceraClase);
+
+        xiomara.agregarAsistencia(new Asistencia(primeraClase, TipoAsistencia.PRESENTE));
+        xiomara.agregarAsistencia(new Asistencia(segundaClase, TipoAsistencia.PRESENTE));
+        xiomara.agregarAsistencia(new Asistencia(terceraClase, TipoAsistencia.PRESENTE));
+
+        ana.agregarAsistencia(new Asistencia(primeraClase, TipoAsistencia.PRESENTE));
+        ana.agregarAsistencia(new Asistencia(terceraClase, TipoAsistencia.PRESENTE));
+
+        juan.agregarAsistencia(new Asistencia(segundaClase, TipoAsistencia.AUSENTE));
+        juan.agregarAsistencia(new Asistencia(terceraClase, TipoAsistencia.PRESENTE));
+
+        Collection<Estudiante> listaEsperada = List.of(ana, juan);
+
+        assertIterableEquals(listaEsperada, curso.getAusentes(segundaClase));
+
+        LOG.info("Finalización listaAusentes");
     }
 
     /**
-     * Prueba para verificar que se puede obtener una nota obtenida que NO existente
+     * Prueba para verificar el porcentaje de asistencia a una clase
      */
     @Test
-    public void obtenerNotaObtenidaNOExistente() {
-        LOG.info("Inicio obtenerNotaObtenidaNOExistente");
+    public void porcentajeAsistencia() {
+        LOG.info("Inicio porcentajeAsistencia");
 
-        var estudiante = new Estudiante("Camila", "Alzate Rios", "109453264", "camila@uniquindio.edu.co",
-                "315635674", 15);
+        var curso = new Curso("Programación 1");
 
-        assertThrows(Throwable.class, () -> estudiante.getNotaObtenida("Parcial 2"));
+        var xiomara = new Estudiante("Xiomara", "Gomez", "109445634", "xiomara@uniquindio.edu.co", "3148763412", 31);
+        var ana = new Estudiante("Ana", "Quintero", "109498764", "ana@uniquindio.edu.co", "3137442312", 28);
+        var juan = new Estudiante("Juan", "Botero", "1092394924", "juan@uniquindio.edu.co", "3218341234", 17);
 
-        LOG.info("Finalización obtenerNotaObtenidaNOExistente");
-    }
+        curso.agregarEstudiante(xiomara);
+        curso.agregarEstudiante(ana);
+        curso.agregarEstudiante(juan);
 
-    /**
-     * Prueba para verificar que se puede actualizar una nota obtenida existente
-     */
-    @Test
-    public void actualizarNotaObtenidaExistente() {
-        LOG.info("Inicio obtenerNotaObtenidaExistente");
+        var primeraClase = new ClaseCurso(LocalDateTime.now().minusDays(15));
+        var segundaClase = new ClaseCurso(LocalDateTime.now().minusDays(8));
+        var terceraClase = new ClaseCurso(LocalDateTime.now());
 
-        var estudiante = new Estudiante("Camila", "Alzate Rios", "109453264", "camila@uniquindio.edu.co",
-                "315635674", 15);
+        curso.programarClase(primeraClase);
+        curso.programarClase(segundaClase);
+        curso.programarClase(terceraClase);
 
-        var notaParcial = new NotaParcial("Parcial 1", 0.2);
-        var notaObtenida = new NotaObtenida(notaParcial, 3.5);
-        estudiante.adicionarNotaObtenida(notaObtenida);
-        estudiante.setNotaObtenida("Parcial 1", 4.8);
+        xiomara.agregarAsistencia(new Asistencia(primeraClase, TipoAsistencia.PRESENTE));
+        xiomara.agregarAsistencia(new Asistencia(segundaClase, TipoAsistencia.PRESENTE));
+        xiomara.agregarAsistencia(new Asistencia(terceraClase, TipoAsistencia.PRESENTE));
 
-        assertEquals(notaObtenida, estudiante.getNotaObtenida("Parcial 1"));
-        assertEquals(4.8, estudiante.getNotaObtenida("Parcial 1").getNotaObtenida(), App.PRECISION);
+        ana.agregarAsistencia(new Asistencia(primeraClase, TipoAsistencia.PRESENTE));
+        ana.agregarAsistencia(new Asistencia(terceraClase, TipoAsistencia.PRESENTE));
 
-        LOG.info("Finalización obtenerNotaObtenidaExistente");
-    }
+        juan.agregarAsistencia(new Asistencia(segundaClase, TipoAsistencia.AUSENTE));
+        juan.agregarAsistencia(new Asistencia(terceraClase, TipoAsistencia.PRESENTE));
 
-    /**
-     * Prueba para verificar que se puede actualizar una nota obtenida existente
-     */
-    @Test
-    public void actualizarNotaObtenidaInexistente() {
-        LOG.info("Inicio actualizarNotaObtenidaInexistente");
+        assertEquals(0.666, curso.calcularPorcentajeAsistencia(primeraClase), App.PRECISION);
 
-        var estudiante = new Estudiante("Camila", "Alzate Rios", "109453264", "camila@uniquindio.edu.co",
-                "315635674", 15);
-
-        assertThrows(Throwable.class, () -> estudiante.setNotaObtenida("Parcial 2", 2.5));
-
-        LOG.info("Finalización actualizarNotaObtenidaInexistente");
-    }
-
-    /**
-     * Prueba para verificar que se puede actualizar una nota obtenida con una nota
-     * mayor a 5.0
-     */
-    @Test
-    public void actualizarNotaObtenidaMayorCinco() {
-        LOG.info("Inicio actualizarNotaObtenidaMayorCinco");
-
-        var estudiante = new Estudiante("Camila", "Alzate Rios", "109453264", "camila@uniquindio.edu.co",
-                "315635674", 15);
-
-        var notaParcial = new NotaParcial("Parcial 1", 0.2);
-        var notaObtenida = new NotaObtenida(notaParcial, 3.5);
-        estudiante.adicionarNotaObtenida(notaObtenida);
-
-        assertThrows(Throwable.class, () -> estudiante.setNotaObtenida("Parcial 1", 9.2));
-
-        LOG.info("Finalización actualizarNotaObtenidaMayorCinco");
-    }
-
-    /**
-     * Prueba para verificar que se puede actualizar una nota obtenida con una nota
-     * menor a 0.0
-     */
-    @Test
-    public void actualizarNotaObtenidaMenorCero() {
-        LOG.info("Inicio actualizarNotaObtenidaMenorCero");
-
-        var estudiante = new Estudiante("Camila", "Alzate Rios", "109453264", "camila@uniquindio.edu.co",
-                "315635674", 15);
-
-        var notaParcial = new NotaParcial("Parcial 1", 0.2);
-        var notaObtenida = new NotaObtenida(notaParcial, 3.5);
-        estudiante.adicionarNotaObtenida(notaObtenida);
-
-        assertThrows(Throwable.class, () -> estudiante.setNotaObtenida("Parcial 1", -2.1));
-
-        LOG.info("Finalización actualizarNotaObtenidaMenorCero");
-    }
-
-    /**
-     * Prueba para verificar la definitiva cuando se tienen varias notas parciales
-     */
-    @Test
-    public void notaDefinitivaVariasNotas() {
-        LOG.info("Inicio notaDefinitivaVariasNotas");
-
-        var estudiante = new Estudiante("Camila", "Alzate Rios", "109453264", "camila@uniquindio.edu.co",
-                "315635674", 15);
-
-        var notaParcial1 = new NotaParcial("Parcial 1", 0.2);
-        var notaParcial2 = new NotaParcial("Parcial 2", 0.3);
-        var notaParcial3 = new NotaParcial("Parcial 3", 0.5);
-
-        var notaObtenida1 = new NotaObtenida(notaParcial1, 3.2);
-        var notaObtenida2 = new NotaObtenida(notaParcial2, 4.2);
-        var notaObtenida3 = new NotaObtenida(notaParcial3, 4.0);
-
-        estudiante.adicionarNotaObtenida(notaObtenida1);
-        estudiante.adicionarNotaObtenida(notaObtenida2);
-        estudiante.adicionarNotaObtenida(notaObtenida3);
-
-        assertEquals(3.9, estudiante.getDefinitiva(), App.PRECISION);
-
-        LOG.info("Finalización notaDefinitivaVariasNotas");
-    }
-
-    /**
-     * Prueba para verificar la definitiva cuando NO se tienen varias notas
-     * parciales
-     */
-    @Test
-    public void notaDefinitivaSinNotas() {
-        LOG.info("Inicio notaDefinitivaSinNotas");
-
-        var estudiante = new Estudiante("Camila", "Alzate Rios", "109453264", "camila@uniquindio.edu.co",
-                "315635674", 15);
-
-        assertThrows(Throwable.class, () -> estudiante.getDefinitiva());
-
-        LOG.info("Finalización notaDefinitivaSinNotas");
-    }
-
-    /**
-     * Prueba para verificar la definitiva cuando se tienen varias notas parciales y
-     * sus porcentajes no suman 1.0 (100%)
-     */
-    @Test
-    public void notaDefinitivaVariasNotasNo100Porciento() {
-        LOG.info("Inicio notaDefinitivaVariasNotasNo100Porciento");
-
-        var estudiante = new Estudiante("Camila", "Alzate Rios", "109453264", "camila@uniquindio.edu.co",
-                "315635674", 15);
-
-        var notaParcial1 = new NotaParcial("Parcial 1", 0.1);
-        var notaParcial2 = new NotaParcial("Parcial 2", 0.2);
-        var notaParcial3 = new NotaParcial("Parcial 3", 0.3);
-
-        var notaObtenida1 = new NotaObtenida(notaParcial1, 3.2);
-        var notaObtenida2 = new NotaObtenida(notaParcial2, 4.2);
-        var notaObtenida3 = new NotaObtenida(notaParcial3, 4.0);
-
-        estudiante.adicionarNotaObtenida(notaObtenida1);
-        estudiante.adicionarNotaObtenida(notaObtenida2);
-        estudiante.adicionarNotaObtenida(notaObtenida3);
-
-        assertThrows(Throwable.class, () -> estudiante.getDefinitiva());
-
-        LOG.info("Finalización notaDefinitivaVariasNotasNo100Porciento");
+        LOG.info("Finalización porcentajeAsistencia");
     }
 
 }

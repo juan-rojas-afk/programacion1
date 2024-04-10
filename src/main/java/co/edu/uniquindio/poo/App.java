@@ -15,9 +15,6 @@ public class App {
     // Precisión al momento de comparar dos número doubles
     public static final double PRECISION = 0.05;
 
-    // Mínima nota para aprobar un curso
-    public static final double MINIMA_NOTA = 2.95;
-
     public static void main(String[] args) {
         System.out.println("Hello World!");
     }

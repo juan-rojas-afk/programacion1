@@ -1,3 +1,4 @@
+
 package co.edu.uniquindio.poo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -8,7 +9,7 @@ import java.util.logging.Logger;
 import org.junit.jupiter.api.Test;
 
 /**
- * Clase para probar el funcionamiento del código de un estudiante
+ * Clase para probar el funcionamiento del código de un estudiante - Parte 1
  * 
  * @author Área de programación UQ
  * @since 2024-01
@@ -26,7 +27,7 @@ public class EstudianteTest {
     public void datosCompletos() {
         LOG.info("Inicio datosCompletos");
 
-        var estudiante = new Estudiante("Camila", "Alzate Rios", "109453264", "camila@uniquindio.edu.co",
+        Estudiante estudiante = new Estudiante("Camila", "Alzate Rios", "109453264", "camila@uniquindio.edu.co",
                 "315635674", 18);
 
         assertEquals("Camila", estudiante.getNombres());
@@ -54,7 +55,7 @@ public class EstudianteTest {
     @Test
     public void datosVacios() {
         LOG.info("Inicio datosVacios");
-        assertThrows(Throwable.class, () -> new Estudiante("", "", "", "camila@uniquindio.edu.co", "", 18));
+        assertThrows(Throwable.class, () -> new Estudiante("", "", "", "camila@uniquindio.edu.co", "", (byte) 18));
         LOG.info("Finalización datosVacios");
     }
 
