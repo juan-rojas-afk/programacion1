@@ -47,8 +47,7 @@ public class Curso {
      * @param estudiante Estudiante que se desea agregar
      */
     public void agregarEstudiante(Estudiante estudiante) {
-        assert validarNumeroIdentificacionExiste(estudiante.getNumeroIdentificacion()) == false
-                : "El número de identificación ya existe.";
+        assert !validarNumeroIdentificacionExiste(estudiante.getNumeroIdentificacion()) : "El número de identificación ya existe.";
         estudiantes.add(estudiante);
     }
 
