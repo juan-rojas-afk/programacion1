@@ -20,7 +20,9 @@ public class NotaObtenida {
      * @param notaObtenida valor de la nota obtenida
      */
     public NotaObtenida(NotaParcial notaParcial, double notaObtenida) {
-        assert notaParcial != null : "La nota parcial no puede ser null";
+        if (notaParcial == null) {
+            throw new IllegalArgumentException("La nota parcial no puede ser null");
+        }
         validarValorNota(notaObtenida);
 
         this.notaParcial = notaParcial;
@@ -62,8 +64,12 @@ public class NotaObtenida {
      * @param notaObtenida valor de nota obtenida a validar
      */
     private void validarValorNota(double notaObtenida) {
-        assert notaObtenida >= 0.0 : "La nota obtenida no puede ser menor que 0.0";
-        assert notaObtenida <= 5.0 : "La nota obtenida no puede ser mayor que 5.0";
+        if (notaObtenida < 0.0) {
+            throw new IllegalArgumentException("La nota obtenida no puede ser menor que o.o");
+        }
+        if (notaObtenida > 5.0) {
+            throw new IllegalArgumentException("La nota obtenida no puede ser mayor que 5.0");
+        }
     }
 
 }
