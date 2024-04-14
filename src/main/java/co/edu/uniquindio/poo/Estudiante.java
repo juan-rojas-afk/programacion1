@@ -43,7 +43,7 @@ public class Estudiante {
     public String getNombres() {
         return nombres;
     }
-
+    
     /**
      * Método para obtener los apellidos del estudiante
      * 
