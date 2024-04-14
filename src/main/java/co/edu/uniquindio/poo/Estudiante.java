@@ -3,8 +3,6 @@ package co.edu.uniquindio.poo;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
-import java.util.Optional;
-import java.util.function.Predicate;
 
 /**
  * Clase para manejar la información de un Estudiante
@@ -24,25 +22,7 @@ public class Estudiante {
     private final int edad;
     private final Collection<NotaObtenida> notasObtenidas;
 
-    /**
-     * Método constructor de la clase Estudiante
-     * 
-     * @param nombres              nombres del estudiante
-     * @param apellidos            apellidos del estudiante
-     * @param numeroIdentificacion número de identificación del estudiante
-     * @param correo               correo electrónico del estudiante
-     * @param telefono             teléfono del estudiante
-     * @param edad                 edad del estudiante
-     */
-    public Estudiante(String nombres, String apellidos, String numeroIdentificacion, String correo, String telefono,
-            int edad) {
-        assert nombres != null && !nombres.isBlank() : "El nombre debe ser diferente de null";
-        assert apellidos != null && !apellidos.isBlank() : "El apellido debe ser diferente de null";
-        assert numeroIdentificacion != null && !numeroIdentificacion.isBlank()
-                : "El número de identificación debe ser diferente de null";
-        assert correo != null && correo.contains("@") : "El correo electrónico debe contener el símbolo @";
-        assert telefono != null : "El teléfono no puede ser null";
-        assert edad > 0 : "La edad debe ser mayor a cero";
+    public Estudiante(String nombres, String apellidos, String numeroIdentificacion, String correo, String telefono, int edad) {
 
         this.nombres = nombres;
         this.apellidos = apellidos;
@@ -125,9 +105,11 @@ public class Estudiante {
      * @param notaObtenida nota obtenida que se quiere verificar que NO exista.
      */
     private void verificarExistenciaNotaObtenida(NotaObtenida notaObtenida) {
-        Predicate<NotaObtenida> nombreIgual = j -> j.getNotaParcial().nombre()
-                .equals(notaObtenida.getNotaParcial().nombre());
-        assert !notasObtenidas.stream().filter(nombreIgual).findAny().isPresent();
+        for (NotaObtenida nota : notasObtenidas) {
+            if (nota.getNotaParcial().nombre().equals(notaObtenida.getNotaParcial().nombre())) {
+                throw new IllegalArgumentException("Ya existe una nota para esta nota parcial");
+            }
+        }
     }
 
     /**
@@ -137,28 +119,13 @@ public class Estudiante {
      * @return la nota obtenida asociada a la nota parcial
      */
     public NotaObtenida getNotaObtenida(String nombreNotaParcial) {
-        var posibleNotaObtenida = buscarNotaParcial(nombreNotaParcial);
-        assert posibleNotaObtenida.isPresent();
-
-        return posibleNotaObtenida.get();
+        for (NotaObtenida nota : notasObtenidas) {
+            if (nota.getNotaParcial().nombre().equals(nombreNotaParcial)) {
+                return nota;
+            }
+        }
+        throw new IllegalArgumentException("No se encontró una nota para la nota parcial");
     }
-
-    /**
-     * Método de apoyo (privado) para buscar una posible nota obtenida asociada a
-     * una nota parcial
-     * 
-     * @param nombreNotaParcial nombre de la nota parcial asociada a la nota
-     *                          obtenida
-     * @return posible nota obtenida (si existe) asociada a la nota parcial del
-     *         nombre indicado
-     */
-    private Optional<NotaObtenida> buscarNotaParcial(String nombreNotaParcial) {
-        Predicate<NotaObtenida> nombreIgual = j -> j.getNotaParcial().nombre().equals(nombreNotaParcial);
-        var posibleNotaObtenida = notasObtenidas.stream().filter(nombreIgual).findAny();
-
-        return posibleNotaObtenida;
-    }
-
     /**
      * Método para obtener una colección NO modificable de las notas parciales del
      * curso.
@@ -177,15 +144,18 @@ public class Estudiante {
      * @param notaObtenida      nueva nota obtenida
      */
     public void setNotaObtenida(String nombreNotaParcial, double notaObtenida) {
-        assert notaObtenida >= 0.0 : "La nota obtenida no puede ser menor a cero";
-        assert notaObtenida <= 5.0 : "La nota obtenida no puede ser mayor a cinco";
-        Predicate<NotaObtenida> nombreIgual = j -> j.getNotaParcial().nombre().equals(nombreNotaParcial);
-        var notaObtenidaActual = notasObtenidas.stream().filter(nombreIgual).findAny();
-        assert notaObtenidaActual.isPresent();
+        if (notaObtenida < 0.0 || notaObtenida > 5.0) {
+            throw new IllegalArgumentException("La nota Obtenida debe estar entre 0.0 y 5.0");
+        }
 
-        notaObtenidaActual.get().setNotaObtenida(notaObtenida);
+        for (NotaObtenida nota : notasObtenidas) {
+            if (nota.getNotaParcial().nombre().equals(nombreNotaParcial)) {
+                nota.setNotaObtenida(notaObtenida);
+                return;
+            }
+        }
+        throw new IllegalArgumentException("No se encontro una nota para la nota pacial especificada");
     }
-
     /**
      * Método para obtener la nota definitiva usando un promedio ponderado suma de
      * todas (nota * porcentaje)
@@ -195,9 +165,10 @@ public class Estudiante {
     public double getDefinitiva() {
         validarNotas100Porciento();
 
-        double definitiva = notasObtenidas.stream()
-                .mapToDouble(n -> (n.getNotaObtenida() * n.getNotaParcial().porcentaje())).sum();
-
+        double definitiva = 0.0;
+        for (NotaObtenida nota : notasObtenidas)  {
+            definitiva += (nota.getNotaObtenida() * nota.getNotaParcial().porcentaje());
+        }
         return definitiva;
     }
 
@@ -206,9 +177,13 @@ public class Estudiante {
      * notas obtenidas sea 1.0 (100%)
      */
     private void validarNotas100Porciento() {
-        double pesoNotas = notasObtenidas.stream()
-                .mapToDouble(n -> n.getNotaParcial().porcentaje()).sum();
-        assert (1.0 - pesoNotas) <= App.PRECISION : "Las notas parciales no suman 1.0 (100%)";
+        double pesoNotas = 0.0;
+        for (NotaObtenida nota : notasObtenidas) {
+            pesoNotas += nota.getNotaParcial().porcentaje();
+        }
+        if (Math.abs(1.0 - pesoNotas)>App.PRECISION) {
+            throw new IllegalStateException("Las notas parciales no suman 1.0 (100%)");
+        }
     }
 
 }
