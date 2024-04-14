@@ -10,7 +10,7 @@ package co.edu.uniquindio.poo;
  *        (https://raw.githubusercontent.com/grid-uq/poo/main/LICENSE)
  */
 public class App {
-    // CONSTANTES GLOBALEs
+    // DEFINE CONSTNATES GLOBALES
 
     // Precisión al momento de comparar dos número doubles
     public static final double PRECISION = 0.05;
