@@ -12,6 +12,6 @@ package co.edu.uniquindio.poo;
 public record Asistencia(ClaseCurso claseCurso, TipoAsistencia tipoAsistencia) {
 
     public Asistencia {
-        assert claseCurso != null;
+        assert claseCurso != null : "El  parámetro clase no puede ser nulo ";
     }
 }

@@ -15,6 +15,6 @@ import java.time.LocalDateTime;
 public record ClaseCurso(LocalDateTime fechaClase) {
 
     public ClaseCurso {
-        assert fechaClase != null;
+        assert fechaClase != null : "El parametro fecgaClase no puede ser nulo";
     }
 } 
