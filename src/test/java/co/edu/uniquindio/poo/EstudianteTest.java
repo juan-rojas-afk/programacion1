@@ -44,7 +44,7 @@ public class EstudianteTest {
     @Test
     public void datosNulos() {
         LOG.info("Inicio datosNulos");
-        assertThrows(Throwable.class, () -> new Estudiante(null, null, null, null, null, 18));
+        assertThrows(Throwable.class, () -> new Estudiante(null, null, null, null, null, 0));
         LOG.info("Finalización datosNulos");
     }
 
@@ -64,8 +64,7 @@ public class EstudianteTest {
     @Test
     public void edadNegativa() {
         LOG.info("Inicio datosNegativos");
-        assertThrows(Throwable.class, () -> new Estudiante("Camila", "Alzate Rios", "109453264",
-                "camila@uniquindio.edu.co", "315635674", -18));
+        assertThrows(Throwable.class, () -> new Estudiante("Camila", "Alzate Rios", "109453264", "camila@uniquindio.edu.co", "315635674", -18));
         LOG.info("Finalización datosNegativos");
     }
 
