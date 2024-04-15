@@ -24,6 +24,13 @@ public class Estudiante {
     private final Collection<NotaObtenida> notasObtenidas;
 
     public Estudiante(String nombres, String apellidos, String numeroIdentificacion, String correo, String telefono, int edad) {
+        assert nombres != null && !nombres.isBlank() : "El nombre es tiene valores invalidos";
+        assert apellidos != null && !apellidos.isBlank() : "El numero de Id es invalido";
+        assert numeroIdentificacion != null && !numeroIdentificacion.isBlank() : "El apellido es tiene valores invalidos";
+        assert correo != null && correo.contains("@") : "El correo ingresado debe tener un @";
+        assert telefono != null : "el numero de telefono es invalido";
+        assert edad > 0 : "La edad ingresada debe ser positiva y mayor a 0";
+
 
         this.nombres = nombres;
         this.apellidos = apellidos;
