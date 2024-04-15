@@ -3,7 +3,9 @@ package co.edu.uniquindio.poo;
 /**
  * Clase principal
  * 
- * @author Área de programación UQ
+ * @author Juan Rojas
+ * @author Jean Harwol
+ * @author Sebastian Vega
  * @since 2024-01
  * 
  *        Licencia GNU/GPL V3.0
